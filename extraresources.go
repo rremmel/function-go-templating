@@ -15,6 +15,8 @@ type ExtraResourcesRequirement struct {
 	APIVersion string `json:"apiVersion"`
 	// Kind of the resource.
 	Kind string `json:"kind"`
+    // Namespace of the resource (optional, for namespaced resources)
+    Namespace string `json:"namespace,omitempty"`
 	// MatchLabels defines the labels to match the resource, if defined,
 	// matchName is ignored.
 	MatchLabels map[string]string `json:"matchLabels,omitempty"`
@@ -29,6 +31,11 @@ func (e *ExtraResourcesRequirement) ToResourceSelector() *fnv1.ResourceSelector 
 		ApiVersion: e.APIVersion,
 		Kind:       e.Kind,
 	}
+
+    if e.Namespace != "" {
+        out.Namespace = &e.Namespace
+    }
+
 	if e.MatchName == "" {
 		out.Match = &fnv1.ResourceSelector_MatchLabels{
 			MatchLabels: &fnv1.MatchLabels{Labels: e.MatchLabels},
